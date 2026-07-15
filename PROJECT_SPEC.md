@@ -1,758 +1,336 @@
-\# Library Book Manager — Minimum Project Specification
+# Library Book Manager - Minimum Project Specification
 
+## Objective
 
-
-\## Objective
-
-
-
-Build a working desktop CRUD application for managing library books.
-
-
+Build a working server-side Java CRUD application for managing library books.
 
 The application must demonstrate:
 
+* Java classes and objects
+* Encapsulation
+* Exception handling
+* JSP, JSTL, HTML and CSS
+* Spring MVC controllers
+* Spring Boot REST controllers
+* GET, POST, PUT and DELETE REST requests
+* MySQL database connectivity
+* Spring Boot
+* Spring Data JPA
+* Hibernate
+* WAR deployment to external Apache Tomcat 10.1
 
+## Architecture
 
-\* Java classes and objects
-
-\* Encapsulation
-
-\* Exception handling
-
-\* JavaFX layouts, controls and events
-
-\* HTTP REST communication
-
-\* GET, POST, PUT and DELETE requests
-
-\* MySQL database connectivity
-
-\* Spring Boot
-
-\* Spring Data JPA
-
-\* Hibernate
-
-
-
-\## Architecture
-
-
+Primary web application:
 
 ```text
-
-JavaFX Frontend
-
-&#x20;     |
-
-&#x20;     | HTTP and JSON
-
-&#x20;     v
-
-Spring Boot REST API
-
-&#x20;     |
-
-&#x20;     | JPA and Hibernate
-
-&#x20;     v
-
+Browser
+  |
+  | JSP forms
+  v
+BookWebController
+  |
+  v
+BookService
+  |
+  v
+BookRepository
+  |
+  v
 MySQL Database
-
 ```
 
+REST demonstration:
 
+```text
+Postman
+  |
+  | HTTP and JSON
+  v
+BookRestController
+  |
+  v
+BookService
+  |
+  v
+BookRepository
+  |
+  v
+MySQL Database
+```
 
-The JavaFX application must never connect directly to MySQL.
+The browser frontend is rendered by JSP pages deployed with the Spring Boot WAR. There is no separate client application.
 
+## Technology
 
-
-\## Technology
-
-
-
-\* Java 21
-
-\* Maven
-
-\* JavaFX
-
-\* JavaFX CSS
-
-\* Java HttpClient
-
-\* Jackson Databind
-
-\* Spring Boot
-
-\* Spring Web
-
-\* Spring Data JPA
-
-\* Hibernate
-
-\* MySQL Connector/J
-
-
+* Java 21
+* Maven
+* Spring Boot
+* Spring Web MVC
+* JSP
+* JSTL
+* HTML
+* CSS
+* Spring Data JPA
+* Hibernate
+* MySQL Connector/J
+* Apache Tomcat 10.1
 
 Use a stable Spring Boot version compatible with Java 21.
 
-
-
 Do not create `module-info.java`.
 
-
-
-\## Project Structure
-
-
+## Project Structure
 
 ```text
-
 advanced-java-library/
-
 ├── backend/
-
-├── frontend/
-
 ├── database/
-
 │   └── setup.sql
-
 ├── AGENTS.md
-
-├── PROJECT\_SPEC.md
-
+├── PROJECT_SPEC.md
 └── README.md
-
 ```
 
-
-
-The backend and frontend must be separate Maven projects.
-
-
-
-\## Book Entity
-
-
+## Book Entity
 
 Create a `Book` entity with:
 
-
-
 ```text
-
 id       Long, auto-generated
-
 title    String, required
-
 author   String, required
-
 category String, required
-
 quantity Integer, required and zero or greater
-
 ```
-
-
 
 Map the entity to a database table named `books`.
 
+## Backend Classes
 
-
-\## Backend Classes
-
-
-
-Create only the essential classes:
-
-
+Use the essential backend classes:
 
 ```text
-
 Book
-
 BookRepository
-
 BookService
-
-BookController
-
+BookRestController
+BookWebController
 BackendApplication
-
 ```
-
-
 
 A separate service interface and implementation are not required.
 
+`BookService` must expose plain Java methods and must not depend on HTTP-specific classes.
 
+## JSP Web Routes
 
-\## REST Endpoints
-
-
-
-\### Get all books
-
-
-
-```http
-
-GET /api/books
-
+```text
+GET  /books
+GET  /books/new
+POST /books
+GET  /books/{id}/edit
+POST /books/{id}/update
+POST /books/{id}/delete
 ```
 
+The web controller must use normal HTML form submissions. Update and delete actions use POST routes.
 
+## REST Endpoints
+
+### Get all books
+
+```http
+GET /api/books
+```
 
 Response:
 
-
-
 ```json
-
-\[
-
-&#x20; {
-
-&#x20;   "id": 1,
-
-&#x20;   "title": "Effective Java",
-
-&#x20;   "author": "Joshua Bloch",
-
-&#x20;   "category": "Programming",
-
-&#x20;   "quantity": 4
-
-&#x20; }
-
+[
+  {
+    "id": 1,
+    "title": "Effective Java",
+    "author": "Joshua Bloch",
+    "category": "Programming",
+    "quantity": 4
+  }
 ]
-
 ```
 
-
-
-\### Get one book
-
-
+### Get one book
 
 ```http
-
 GET /api/books/{id}
-
 ```
-
-
 
 Return HTTP 404 when the book does not exist.
 
-
-
-\### Create book
-
-
+### Create book
 
 ```http
-
 POST /api/books
-
 Content-Type: application/json
-
 ```
-
-
 
 Request:
 
-
-
 ```json
-
 {
-
-&#x20; "title": "Effective Java",
-
-&#x20; "author": "Joshua Bloch",
-
-&#x20; "category": "Programming",
-
-&#x20; "quantity": 4
-
+  "title": "Effective Java",
+  "author": "Joshua Bloch",
+  "category": "Programming",
+  "quantity": 4
 }
-
 ```
-
-
 
 Return HTTP 201 when successful.
 
-
-
-\### Update book
-
-
+### Update book
 
 ```http
-
 PUT /api/books/{id}
-
 Content-Type: application/json
-
 ```
-
-
 
 Return HTTP 200 when successful and HTTP 404 when the book does not exist.
 
-
-
-\### Delete book
-
-
+### Delete book
 
 ```http
-
 DELETE /api/books/{id}
-
 ```
-
-
 
 Return HTTP 204 when successful and HTTP 404 when the book does not exist.
 
-
-
-\## Backend Validation
-
-
+## Validation
 
 Reject a request when:
 
-
-
-\* Title is blank.
-
-\* Author is blank.
-
-\* Category is blank.
-
-\* Quantity is null.
-
-\* Quantity is less than zero.
-
-
+* Title is blank.
+* Author is blank.
+* Category is blank.
+* Quantity is null.
+* Quantity is less than zero.
 
 Use simple, understandable validation responses.
 
+For web controller methods using validation, place `BindingResult` immediately after the validated model attribute parameter.
 
+## JSP Views
 
-\## Database
+Create JSP views under:
 
+```text
+backend/src/main/webapp/WEB-INF/views/
+```
 
+Required views:
+
+```text
+books/list.jsp
+books/form.jsp
+error.jsp
+```
+
+The list page must contain:
+
+* Project heading
+* Add Book link
+* Table containing ID, title, author, category and quantity
+* Edit action
+* Delete form using POST submission
+* Empty-state message
+
+The form page must support both creating and editing books and must display validation errors.
+
+Create one CSS file under:
+
+```text
+backend/src/main/resources/static/css/style.css
+```
+
+## Database
 
 Use MySQL.
 
-
-
 Database name:
 
-
-
 ```text
-
-advanced\_java\_library
-
+advanced_java_library
 ```
-
-
 
 Create `database/setup.sql` containing:
 
-
-
 ```sql
-
-CREATE DATABASE IF NOT EXISTS advanced\_java\_library;
-
+CREATE DATABASE IF NOT EXISTS advanced_java_library;
 ```
-
-
 
 Configure the backend using:
 
-
-
 ```properties
-
-spring.datasource.url=jdbc:mysql://localhost:3306/advanced\_java\_library
-
-spring.datasource.username=${DB\_USERNAME:root}
-
-spring.datasource.password=${DB\_PASSWORD:}
-
+spring.datasource.url=jdbc:mysql://localhost:3306/advanced_java_library
+spring.datasource.username=${DB_USERNAME:root}
+spring.datasource.password=${DB_PASSWORD:}
 spring.jpa.hibernate.ddl-auto=update
-
 spring.jpa.show-sql=true
-
 ```
-
-
 
 Do not hardcode a private password.
 
+## JSP Configuration
 
+Configure JSP view resolution:
 
-\## JavaFX Frontend
-
-
-
-Build one JavaFX window.
-
-
-
-Use Java code for the layout. FXML is not required.
-
-
-
-Use a `BorderPane` or similar standard JavaFX layout.
-
-
-
-The screen must contain:
-
-
-
-\### Header
-
-
-
-\* Application name: Library Book Manager
-
-\* Small subtitle: Advanced Java CRUD Project
-
-
-
-\### Book form
-
-
-
-\* Title TextField
-
-\* Author TextField
-
-\* Category TextField
-
-\* Quantity TextField
-
-\* Add button
-
-\* Update button
-
-\* Clear button
-
-
-
-\### Book table
-
-
-
-Use a JavaFX `TableView` with columns:
-
-
-
-\* ID
-
-\* Title
-
-\* Author
-
-\* Category
-
-\* Quantity
-
-
-
-\### Table controls
-
-
-
-\* Refresh button
-
-\* Delete button
-
-\* Status label
-
-
-
-When a table row is selected, populate the form with that book's values.
-
-
-
-\## Frontend Behaviour
-
-
-
-\### Read
-
-
-
-When the application starts:
-
-
-
-1\. Send `GET /api/books`.
-
-2\. Deserialize the JSON response.
-
-3\. Display the records in the TableView.
-
-
-
-\### Create
-
-
-
-When Add is clicked:
-
-
-
-1\. Validate the fields.
-
-2\. Send `POST /api/books`.
-
-3\. Refresh the table.
-
-4\. Clear the form.
-
-5\. Show a success message.
-
-
-
-\### Update
-
-
-
-When Update is clicked:
-
-
-
-1\. Require a selected book.
-
-2\. Validate the fields.
-
-3\. Send `PUT /api/books/{id}`.
-
-4\. Refresh the table.
-
-5\. Clear the form.
-
-6\. Show a success message.
-
-
-
-\### Delete
-
-
-
-When Delete is clicked:
-
-
-
-1\. Require a selected book.
-
-2\. Show a confirmation dialog.
-
-3\. Send `DELETE /api/books/{id}`.
-
-4\. Refresh the table.
-
-5\. Show a success message.
-
-
-
-\## Frontend API Classes
-
-
-
-Create:
-
-
-
-```text
-
-Book
-
-BookApiClient
-
-MainApplication
-
+```properties
+spring.mvc.view.prefix=/WEB-INF/views/
+spring.mvc.view.suffix=.jsp
 ```
 
+## WAR Deployment
 
+The Maven backend project must use WAR packaging.
 
-Additional small UI helper classes may be created only when necessary.
+`BackendApplication` must extend `SpringBootServletInitializer`.
 
+`spring-boot-starter-tomcat` must be marked as `provided` for external Tomcat deployment.
 
+Use Jakarta-compatible imports for Spring Boot 3 and Tomcat 10.1.
 
-`BookApiClient` must contain all HTTP communication.
-
-
-
-Use Java's `HttpClient`.
-
-
-
-Use Jackson for JSON serialization and deserialization.
-
-
-
-\## Styling
-
-
-
-Create one JavaFX CSS file.
-
-
-
-Use:
-
-
-
-\* White or light-gray background.
-
-\* Dark text.
-
-\* One restrained accent color.
-
-\* Consistent spacing.
-
-\* Clear input labels.
-
-\* Simple buttons.
-
-\* A readable TableView.
-
-\* Small corner radiuses.
-
-
-
-Do not use:
-
-
-
-\* Gradients.
-
-\* Glassmorphism.
-
-\* Excessive animations.
-
-\* Oversized dashboard cards.
-
-\* Artificial AI-style glowing designs.
-
-
-
-\## Error Handling
-
-
-
-Display an alert when:
-
-
-
-\* Backend cannot be reached.
-
-\* Database request fails.
-
-\* A required field is empty.
-
-\* Quantity is not a valid integer.
-
-\* Quantity is negative.
-
-\* No table row is selected.
-
-\* A requested book does not exist.
-
-
-
-The program must not crash for normal user errors.
-
-
-
-\## README
-
-
+## README
 
 Document:
 
+1. Required software.
+2. How to create the MySQL database.
+3. How to set the database password.
+4. How to run the backend locally.
+5. JSP browser routes.
+6. REST endpoints.
+7. Example GET request.
+8. Example POST request.
+9. How to test using Postman.
+10. How to build and deploy the WAR to external Apache Tomcat 10.1.
 
-
-1\. Required software.
-
-2\. How to create the MySQL database.
-
-3\. How to set the database password.
-
-4\. How to run the backend.
-
-5\. How to run the frontend.
-
-6\. REST endpoints.
-
-7\. Example GET request.
-
-8\. Example POST request.
-
-9\. How to test using Postman.
-
-10\. Optional Apache Tomcat deployment note.
-
-
-
-\## Excluded Features
-
-
+## Excluded Features
 
 Do not implement:
 
-
-
-\* Authentication
-
-\* User roles
-
-\* Dashboard
-
-\* Reports
-
-\* Search
-
-\* Pagination
-
-\* Images
-
-\* File uploads
-
-\* Email
-
-\* Notifications
-
-\* API activity viewer
-
-\* Docker
-
-\* Cloud deployment
-
-\* Apache Tomcat deployment
-
-\* Multiple database tables
-
-\* Advanced design patterns
-
-\* Unrequested features
-
-
-
+* Client-side scripting
+* Additional browser client frameworks
+* Authentication
+* User roles
+* Dashboard
+* Reports
+* Search
+* Pagination
+* Images
+* File uploads
+* Email
+* Notifications
+* API activity viewer
+* Containerized deployment
+* Hosted deployment
+* Multiple database tables
+* Advanced design patterns
+* Unrequested features

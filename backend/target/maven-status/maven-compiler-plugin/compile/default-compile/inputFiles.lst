@@ -1,5 +1,6 @@
 C:\Users\sulov\OneDrive\Desktop\java project\backend\src\main\java\com\example\library\BackendApplication.java
 C:\Users\sulov\OneDrive\Desktop\java project\backend\src\main\java\com\example\library\book\Book.java
-C:\Users\sulov\OneDrive\Desktop\java project\backend\src\main\java\com\example\library\book\BookController.java
 C:\Users\sulov\OneDrive\Desktop\java project\backend\src\main\java\com\example\library\book\BookRepository.java
+C:\Users\sulov\OneDrive\Desktop\java project\backend\src\main\java\com\example\library\book\BookRestController.java
 C:\Users\sulov\OneDrive\Desktop\java project\backend\src\main\java\com\example\library\book\BookService.java
+C:\Users\sulov\OneDrive\Desktop\java project\backend\src\main\java\com\example\library\book\BookWebController.java
