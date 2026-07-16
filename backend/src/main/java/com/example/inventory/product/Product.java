@@ -1,4 +1,4 @@
-package com.example.library.book;
+package com.example.inventory.product;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,38 +11,38 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "books")
-public class Book {
+@Table(name = "products")
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Title is required")
+    @NotBlank(message = "Product name is required")
     @Column(nullable = false)
-    private String title;
+    private String name;
 
-    @NotBlank(message = "Author is required")
-    @Column(nullable = false)
-    private String author;
+    @NotBlank(message = "SKU is required")
+    @Column(nullable = false, unique = true)
+    private String sku;
 
     @NotBlank(message = "Category is required")
     @Column(nullable = false)
     private String category;
 
-    @NotNull(message = "Quantity is required")
-    @Min(value = 0, message = "Quantity cannot be negative")
+    @NotNull(message = "Stock is required")
+    @Min(value = 0, message = "Stock cannot be negative")
     @Column(nullable = false)
-    private Integer quantity;
+    private Integer stock;
 
-    protected Book() {
+    protected Product() {
     }
 
-    public Book(String title, String author, String category, Integer quantity) {
-        this.title = title;
-        this.author = author;
+    public Product(String name, String sku, String category, Integer stock) {
+        this.name = name;
+        this.sku = sku;
         this.category = category;
-        this.quantity = quantity;
+        this.stock = stock;
     }
 
     public Long getId() {
@@ -53,20 +53,20 @@ public class Book {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getSku() {
+        return sku;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 
     public String getCategory() {
@@ -77,11 +77,11 @@ public class Book {
         this.category = category;
     }
 
-    public Integer getQuantity() {
-        return quantity;
+    public Integer getStock() {
+        return stock;
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setStock(Integer stock) {
+        this.stock = stock;
     }
 }

@@ -12,11 +12,11 @@
     </parent>
 
     <groupId>com.example</groupId>
-    <artifactId>library-backend</artifactId>
+    <artifactId>inventory-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>library-backend</name>
-    <description>Spring MVC and REST backend for the Advanced Java Library Book Manager</description>
+    <name>Inventory Product Manager</name>
+    <description>Advanced Java Inventory Product Manager</description>
 
     <properties>
         <java.version>21</java.version>
@@ -66,6 +66,7 @@
     </dependencies>
 
     <build>
+        <finalName>inventory</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

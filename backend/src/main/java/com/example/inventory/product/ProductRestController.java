@@ -1,4 +1,4 @@
-package com.example.library.book;
+package com.example.inventory.product;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,44 +21,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/books")
-public class BookRestController {
+@RequestMapping("/api/products")
+public class ProductRestController {
 
-    private final BookService bookService;
+    private final ProductService productService;
 
-    public BookRestController(BookService bookService) {
-        this.bookService = bookService;
+    public ProductRestController(ProductService productService) {
+        this.productService = productService;
     }
 
     @GetMapping
-    public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
-        return bookService.getBookById(id)
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        return productService.getProductById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Book> createBook(@Valid @RequestBody Book book) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(book));
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(product));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Book> updateBook(
+    public ResponseEntity<Product> updateProduct(
             @PathVariable Long id,
-            @Valid @RequestBody Book book) {
-        return bookService.updateBook(id, book)
+            @Valid @RequestBody Product product) {
+        return productService.updateProduct(id, product)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
-        if (!bookService.deleteBook(id)) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        if (!productService.deleteProduct(id)) {
             return ResponseEntity.notFound().build();
         }
 
@@ -72,5 +72,12 @@ public class BookRestController {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(DuplicateSkuException.class)
+    public ResponseEntity<Map<String, String>> handleDuplicateSku(DuplicateSkuException exception) {
+        Map<String, String> error = new LinkedHashMap<>();
+        error.put("sku", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 }

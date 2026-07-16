@@ -3,15 +3,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Error - Library Book Manager</title>
+    <title>Error - Inventory Product Manager</title>
     <link rel="stylesheet" href="<c:url value='/css/style.css' />">
 </head>
 <body>
 <main class="page narrow">
+    <header class="page-header">
+        <div>
+            <h1>Inventory Product Manager</h1>
+            <p>Advanced Java CRUD Web Application</p>
+        </div>
+    </header>
     <section class="content-panel">
-        <h1>Something went wrong</h1>
+        <h2>Something went wrong</h2>
         <p class="field-error">${message}</p>
-        <a class="button" href="<c:url value='/books' />">Back to Books</a>
+        <a class="button" href="<c:url value='/products' />">Back to Products</a>
     </section>
 </main>
 </body>

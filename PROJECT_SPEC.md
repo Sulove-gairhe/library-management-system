@@ -1,8 +1,8 @@
-# Library Book Manager - Minimum Project Specification
+# Inventory Product Manager - Minimum Project Specification
 
 ## Objective
 
-Build a working server-side Java CRUD application for managing library books.
+Build a working server-side Java CRUD application for managing inventory products.
 
 The application must demonstrate:
 
@@ -28,13 +28,13 @@ Browser
   |
   | JSP forms
   v
-BookWebController
+ProductWebController
   |
   v
-BookService
+ProductService
   |
   v
-BookRepository
+ProductRepository
   |
   v
 MySQL Database
@@ -47,13 +47,13 @@ Postman
   |
   | HTTP and JSON
   v
-BookRestController
+ProductRestController
   |
   v
-BookService
+ProductService
   |
   v
-BookRepository
+ProductRepository
   |
   v
 MySQL Database
@@ -83,7 +83,7 @@ Do not create `module-info.java`.
 ## Project Structure
 
 ```text
-advanced-java-library/
+advanced-java-inventory/
 ├── backend/
 ├── database/
 │   └── setup.sql
@@ -92,56 +92,56 @@ advanced-java-library/
 └── README.md
 ```
 
-## Book Entity
+## Product Entity
 
-Create a `Book` entity with:
+Create a `Product` entity with:
 
 ```text
 id       Long, auto-generated
-title    String, required
-author   String, required
+name     String, required
+sku      String, required and unique
 category String, required
-quantity Integer, required and zero or greater
+stock    Integer, required and zero or greater
 ```
 
-Map the entity to a database table named `books`.
+Map the entity to a database table named `products`.
 
 ## Backend Classes
 
 Use the essential backend classes:
 
 ```text
-Book
-BookRepository
-BookService
-BookRestController
-BookWebController
-BackendApplication
+Product
+ProductRepository
+ProductService
+ProductRestController
+ProductWebController
+InventoryApplication
 ```
 
 A separate service interface and implementation are not required.
 
-`BookService` must expose plain Java methods and must not depend on HTTP-specific classes.
+`ProductService` must expose plain Java methods and must not depend on HTTP-specific classes.
 
 ## JSP Web Routes
 
 ```text
-GET  /books
-GET  /books/new
-POST /books
-GET  /books/{id}/edit
-POST /books/{id}/update
-POST /books/{id}/delete
+GET  /products
+GET  /products/new
+POST /products
+GET  /products/{id}/edit
+POST /products/{id}/update
+POST /products/{id}/delete
 ```
 
 The web controller must use normal HTML form submissions. Update and delete actions use POST routes.
 
 ## REST Endpoints
 
-### Get all books
+### Get all products
 
 ```http
-GET /api/books
+GET /api/products
 ```
 
 Response:
@@ -150,26 +150,26 @@ Response:
 [
   {
     "id": 1,
-    "title": "Effective Java",
-    "author": "Joshua Bloch",
-    "category": "Programming",
-    "quantity": 4
+    "name": "USB Keyboard",
+    "sku": "KB-100",
+    "category": "Accessories",
+    "stock": 12
   }
 ]
 ```
 
-### Get one book
+### Get one product
 
 ```http
-GET /api/books/{id}
+GET /api/products/{id}
 ```
 
-Return HTTP 404 when the book does not exist.
+Return HTTP 404 when the product does not exist.
 
-### Create book
+### Create product
 
 ```http
-POST /api/books
+POST /api/products
 Content-Type: application/json
 ```
 
@@ -177,41 +177,42 @@ Request:
 
 ```json
 {
-  "title": "Effective Java",
-  "author": "Joshua Bloch",
-  "category": "Programming",
-  "quantity": 4
+  "name": "USB Keyboard",
+  "sku": "KB-100",
+  "category": "Accessories",
+  "stock": 12
 }
 ```
 
-Return HTTP 201 when successful.
+Return HTTP 201 when successful and HTTP 409 when the SKU already exists.
 
-### Update book
+### Update product
 
 ```http
-PUT /api/books/{id}
+PUT /api/products/{id}
 Content-Type: application/json
 ```
 
-Return HTTP 200 when successful and HTTP 404 when the book does not exist.
+Return HTTP 200 when successful, HTTP 404 when the product does not exist, and HTTP 409 when the SKU belongs to another product.
 
-### Delete book
+### Delete product
 
 ```http
-DELETE /api/books/{id}
+DELETE /api/products/{id}
 ```
 
-Return HTTP 204 when successful and HTTP 404 when the book does not exist.
+Return HTTP 204 when successful and HTTP 404 when the product does not exist.
 
 ## Validation
 
 Reject a request when:
 
-* Title is blank.
-* Author is blank.
+* Name is blank.
+* SKU is blank.
+* SKU already exists.
 * Category is blank.
-* Quantity is null.
-* Quantity is less than zero.
+* Stock is null.
+* Stock is less than zero.
 
 Use simple, understandable validation responses.
 
@@ -228,21 +229,21 @@ backend/src/main/webapp/WEB-INF/views/
 Required views:
 
 ```text
-books/list.jsp
-books/form.jsp
+products/list.jsp
+products/form.jsp
 error.jsp
 ```
 
 The list page must contain:
 
 * Project heading
-* Add Book link
-* Table containing ID, title, author, category and quantity
+* Add Product link
+* Table containing ID, product name, SKU, category and stock
 * Edit action
 * Delete form using POST submission
 * Empty-state message
 
-The form page must support both creating and editing books and must display validation errors.
+The form page must support both creating and editing products and must display validation errors.
 
 Create one CSS file under:
 
@@ -257,19 +258,19 @@ Use MySQL.
 Database name:
 
 ```text
-advanced_java_library
+advanced_java_inventory
 ```
 
 Create `database/setup.sql` containing:
 
 ```sql
-CREATE DATABASE IF NOT EXISTS advanced_java_library;
+CREATE DATABASE IF NOT EXISTS advanced_java_inventory;
 ```
 
 Configure the backend using:
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/advanced_java_library
+spring.datasource.url=jdbc:mysql://localhost:3306/advanced_java_inventory
 spring.datasource.username=${DB_USERNAME:root}
 spring.datasource.password=${DB_PASSWORD:}
 spring.jpa.hibernate.ddl-auto=update
@@ -291,11 +292,13 @@ spring.mvc.view.suffix=.jsp
 
 The Maven backend project must use WAR packaging.
 
-`BackendApplication` must extend `SpringBootServletInitializer`.
+`InventoryApplication` must extend `SpringBootServletInitializer`.
 
 `spring-boot-starter-tomcat` must be marked as `provided` for external Tomcat deployment.
 
 Use Jakarta-compatible imports for Spring Boot 3 and Tomcat 10.1.
+
+Build output must be `backend/target/inventory.war`.
 
 ## README
 

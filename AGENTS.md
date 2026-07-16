@@ -12,6 +12,8 @@ Build a minimal Advanced Java CRUD course project using:
 * Maven
 * External Apache Tomcat 10.1 WAR deployment
 
+The application is an Inventory Product Manager.
+
 ## Repository Structure
 
 * `backend/` contains the Spring Boot MVC and REST application.
@@ -63,13 +65,14 @@ At the end of each phase, report:
 
 The project is complete when:
 
-* MySQL stores book records.
-* Browser users can list, create, edit and delete books through JSP pages.
-* GET returns books through the REST API.
-* POST creates a book through the REST API.
-* PUT updates a book through the REST API.
-* DELETE removes a book through the REST API.
+* MySQL stores product records.
+* Browser users can list, create, edit and delete products through JSP pages.
+* GET returns products through the REST API.
+* POST creates a product through the REST API.
+* PUT updates a product through the REST API.
+* DELETE removes a product through the REST API.
 * Validation messages appear correctly.
+* Duplicate SKU values are rejected.
 * The backend starts using documented Maven commands.
 * The WAR can be generated with Maven.
 * README contains complete local setup and external Tomcat instructions.

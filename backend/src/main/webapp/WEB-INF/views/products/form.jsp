@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>${pageTitle} - Library Book Manager</title>
+    <title>${pageTitle} - Inventory Product Manager</title>
     <link rel="stylesheet" href="<c:url value='/css/style.css' />">
 </head>
 <body>
@@ -12,26 +12,26 @@
     <header class="page-header">
         <div>
             <h1>${pageTitle}</h1>
-            <p>Library Book Manager</p>
+            <p>Inventory Product Manager</p>
         </div>
-        <a class="button secondary" href="<c:url value='/books' />">Back to Books</a>
+        <a class="button secondary" href="<c:url value='/products' />">Back to Products</a>
     </header>
 
     <section class="content-panel">
         <c:url var="formAction" value="${actionUrl}" />
-        <form:form method="post" modelAttribute="book" action="${formAction}" cssClass="book-form">
+        <form:form method="post" modelAttribute="product" action="${formAction}" cssClass="product-form">
             <form:hidden path="id" />
 
             <div class="field">
-                <label for="title">Title</label>
-                <form:input id="title" path="title" />
-                <form:errors path="title" cssClass="field-error" />
+                <label for="name">Product Name</label>
+                <form:input id="name" path="name" />
+                <form:errors path="name" cssClass="field-error" />
             </div>
 
             <div class="field">
-                <label for="author">Author</label>
-                <form:input id="author" path="author" />
-                <form:errors path="author" cssClass="field-error" />
+                <label for="sku">SKU</label>
+                <form:input id="sku" path="sku" />
+                <form:errors path="sku" cssClass="field-error" />
             </div>
 
             <div class="field">
@@ -41,19 +41,19 @@
             </div>
 
             <div class="field">
-                <label for="quantity">Quantity</label>
-                <form:input id="quantity" path="quantity" type="number" min="0" />
-                <form:errors path="quantity" cssClass="field-error" />
+                <label for="stock">Stock</label>
+                <form:input id="stock" path="stock" type="number" min="0" />
+                <form:errors path="stock" cssClass="field-error" />
             </div>
 
             <div class="form-actions">
                 <button class="button" type="submit">
                     <c:choose>
-                        <c:when test="${editing}">Update Book</c:when>
-                        <c:otherwise>Create Book</c:otherwise>
+                        <c:when test="${editing}">Update Product</c:when>
+                        <c:otherwise>Create Product</c:otherwise>
                     </c:choose>
                 </button>
-                <a class="button secondary" href="<c:url value='/books' />">Cancel</a>
+                <a class="button secondary" href="<c:url value='/products' />">Cancel</a>
             </div>
         </form:form>
     </section>
